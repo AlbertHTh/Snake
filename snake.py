@@ -87,8 +87,6 @@ class Snake:
             for i in range(len(self.old_positions)-1, 0, -1):
                 self.old_positions[i].x = self.old_positions[i-1].x
                 self.old_positions[i].y = self.old_positions[i-1].y
-                # if (len(self.tail) == 1):
-                #     self.old_positions[1] = self.old_positions[0]
             self.old_positions[0].x = self.pos_old.x 
             self.old_positions[0].y = self.pos_old.y #???     
         
@@ -136,6 +134,7 @@ class Snake:
                 return True
         else: 
             return False
+
 #------------Target-----------
 
     def Target(self):
@@ -167,13 +166,8 @@ class Snake:
         self.old_positions[0].y = self.pos[0].y
 
     def DrawNewBox(self):
-        # n = len(self.old_positions) - 1
-        n = 0
-        point2 = self.Get2ndPoint(self.old_positions[n])
-        self.tail.insert(0, Rectangle(self.old_positions[n], point2)) 
-        # self.tail[n].setFill('green')
-        # self.tail[n].setOutline(self.outline)
-        # self.tail[n].draw(self.win)
+        point2 = self.Get2ndPoint(self.old_positions[0])
+        self.tail.insert(0, Rectangle(self.old_positions[0], point2)) 
 
     def Get2ndPoint(self, point):
         point2 = Point(0,0)

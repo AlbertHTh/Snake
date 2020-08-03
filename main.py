@@ -17,5 +17,4 @@ while True:
     s.Target()
     s.SaveOldPos()
     update(s.speed)
-    #Testneu
     
