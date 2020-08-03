@@ -31,4 +31,5 @@ list[0] = 0
 print(str(list[0]))
 print(str(list[1]))
 print(str(list[2]))
+#TESTTEST
     
