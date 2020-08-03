@@ -3,6 +3,7 @@ from grid import *
 from target import *
 
 class Snake:
+#------------Eigenschaften-----------
     grid = Grid()
     target = Target()
     win = GraphWin()
@@ -19,6 +20,7 @@ class Snake:
     outline = 'white'
     hit_target_flag = False
 
+#------------Initialisierung-----------
     def __init__(self, win):
         self.win = win
         self.grid.SetDimensions(self.win.getWidth(), self.win.getHeight())    
@@ -32,10 +34,12 @@ class Snake:
         self.snake.setOutline(self.outline)
         self.snake.draw(self.win)
         
+#------------Run-----------       
     def Run(self):
         self.MoveSnake()
         self.Target()
 
+#------------MoveSnake-----------
     def MoveSnake(self):
         self.UserInputMovesSnake()
         self.HitWall()
