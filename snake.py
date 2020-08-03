@@ -24,20 +24,25 @@ class Snake:
         self.grid.SetDimensions(self.win.getWidth(), self.win.getHeight())    
         self.target.Setup(self.win, self.grid.felder, self.grid.box_width, self.grid.box_height)
         self.pos = self.grid.GetGridPositionAbs(0,0)
-        self.DrawSnake()
+        self.InitializeSnake()
 
-    def DrawSnake(self):
+    def InitializeSnake(self):
         self.snake = Rectangle(self.pos[0], self.pos[1])
         self.snake.setFill(self.farbe)
         self.snake.setOutline(self.outline)
         self.snake.draw(self.win)
+        
+    def Run(self):
+        self.MoveSnake()
+        self.Target()
 
     def MoveSnake(self):
-        self.UserInputMoveSnake()
+        self.UserInputMovesSnake()
         self.HitWall()
         self.HitTail()
-        
-    def UserInputMoveSnake(self):
+        self.SaveCurPos()
+
+    def UserInputMovesSnake(self):
         input = self.win.checkKey()
         input = self.GetRightInput(input, self.lastInput)
             
@@ -45,25 +50,27 @@ class Snake:
         y = self.pos[0].y
         dx = self.grid.box_width
         dy = self.grid.box_height
+
         if(self.HitTarget() == False and self.hit_target_flag == False): # Nur ausführen wenn letzte und diese Runde kein Target getroffen wurde
             self.UpdateTailPos()
         self.hit_target_flag = False #Reset flag
+
         if(input == 'Right'):
-            self.RepositionSnake(1,0)
+            self.RepositionHead(1,0)
             self.RepositionTail()
-            self.SetSnakePosition(x+dx,y)
+            self.SetCurHeadPosition(x+dx,y)
         elif(input == 'Left'):
-            self.RepositionSnake(-1,0)
+            self.RepositionHead(-1,0)
             self.RepositionTail()
-            self.SetSnakePosition(x-dx,y)
+            self.SetCurHeadPosition(x-dx,y)
         elif(input == 'Up'):
-            self.RepositionSnake(0,-1)
+            self.RepositionHead(0,-1)
             self.RepositionTail()
-            self.SetSnakePosition(x,y-dy)
+            self.SetCurHeadPosition(x,y-dy)
         elif(input == 'Down'):
-            self.RepositionSnake(0,1)
+            self.RepositionHead(0,1)
             self.RepositionTail()
-            self.SetSnakePosition(x,y+dy)
+            self.SetCurHeadPosition(x,y+dy)
         self.lastInput = input
 
     def GetRightInput(self, curInput, lastInput):
@@ -71,25 +78,19 @@ class Snake:
             return curInput
         else:
             return lastInput
-
-    def RepositionSnake(self, dx, dy):
-        [dx, dy] = self.grid.GetPositionDelta(self.pos[0].x, self.pos[0].y, dx, dy)
-        self.snake.move(dx, dy)
-
-    def SetSnakePosition(self, x, y):
-        self.pos[0].x = x
-        self.pos[0].y = y
-        self.pos[1].x = x + self.grid.box_width
-        self.pos[1].y = y + self.grid.box_height
-
+            
     def UpdateTailPos(self):
         if self.TailExists():
             for i in range(len(self.old_positions)-1, 0, -1):
                 self.old_positions[i].x = self.old_positions[i-1].x
                 self.old_positions[i].y = self.old_positions[i-1].y
             self.old_positions[0].x = self.pos_old.x 
-            self.old_positions[0].y = self.pos_old.y #???     
-        
+            self.old_positions[0].y = self.pos_old.y  
+
+    def RepositionHead(self, dx, dy):
+        [dx, dy] = self.grid.GetPositionDelta(self.pos[0].x, self.pos[0].y, dx, dy)
+        self.snake.move(dx, dy)
+
     def RepositionTail(self):
         if self.TailExists(): 
             for i in range(0, len(self.tail)):
@@ -100,12 +101,14 @@ class Snake:
                 self.tail[i].setOutline(self.outline)
                 self.tail[i].draw(self.win)
 
+    def SetCurHeadPosition(self, x, y):
+        self.pos[0].x = x
+        self.pos[0].y = y
+        self.pos[1].x = x + self.grid.box_width
+        self.pos[1].y = y + self.grid.box_height  
+    
     def TailExists(self):
         return len(self.tail) > 0
-
-    def SaveOldPos(self):
-        self.pos_old.x = self.pos[0].x
-        self.pos_old.y = self.pos[0].y
 
     def HitWall(self):
         if (self.pos[0].x < 0 or self.pos[0].y < 0 \
@@ -134,14 +137,17 @@ class Snake:
                 return True
         else: 
             return False
+                
+    def SaveCurPos(self):
+        self.pos_old.x = self.pos[0].x
+        self.pos_old.y = self.pos[0].y
 
 #------------Target-----------
-
     def Target(self):
         if (self.HitTarget()):
             self.CreateTarget()
             self.UpdateSpeed()
-            self.AddBoxToTail() 
+            self.ExtendTail() 
 
     def HitTarget(self):
         if (self.target.x == self.pos[0].x and self.target.y == self.pos[0].y):
@@ -156,16 +162,16 @@ class Snake:
     def UpdateSpeed(self):
         self.speed += self.speed_increase
 
-    def AddBoxToTail(self):
-        self.AddOldPos()
-        self.DrawNewBox()
+    def ExtendTail(self):
+        self.AddCurPosToOldPos()
+        self.AddBoxToTail()
 
-    def AddOldPos(self):
+    def AddCurPosToOldPos(self):
         self.old_positions.insert(0, Point(0,0)) 
         self.old_positions[0].x = self.pos[0].x 
         self.old_positions[0].y = self.pos[0].y
 
-    def DrawNewBox(self):
+    def AddBoxToTail(self):
         point2 = self.Get2ndPoint(self.old_positions[0])
         self.tail.insert(0, Rectangle(self.old_positions[0], point2)) 
 

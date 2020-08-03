@@ -7,9 +7,6 @@ class Grid:
     box_width = 0
     box_height = 0
 
-    def __init__(self):
-        pass
-
     def SetDimensions(self, win_height, win_width):
         #Bestimmt die Boxgröße anhand der Fenstergröße und der Felderanzahl
         self.win_height = win_height
@@ -19,17 +16,12 @@ class Grid:
 
     def GetGridPositionAbs(self, x, y):
         # x - Zeile, y - Spalte; Beginnend bei "0"; Absoluter Wert in Pixeln
+        #Dient nur der Initialisierung
         x1 = x*self.box_width
         y1 = y*self.box_height
         x2 = x*self.box_width + self.box_width
         y2 = y*self.box_height + self.box_height
         return [Point(x1,y1), Point(x2,y2)]
-
-    def GetGridPositionRel(self, x, y):
-        # x - Zeile, y - Spalte; Beginnend bei "0"; Relativer Wert zw. [0 grid.felder]
-        x = x / self.box_width
-        y = y / self.box_height
-        return [x, y]
 
     def GetPositionDelta(self, x, y, dx, dy):
         dx = dx*self.box_width

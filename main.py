@@ -1,9 +1,7 @@
 from graphics import *
 from snake import *
 
-# screen_width = 1200
-# screen_height = 800
-
+#Snake Spiel
 win_width = 600
 win_height = 600
 
@@ -13,8 +11,6 @@ win.setBackground('black')
 s = Snake(win)
 
 while True:
-    s.MoveSnake()
-    s.Target()
-    s.SaveOldPos()
+    s.Run()
     update(s.speed)
     

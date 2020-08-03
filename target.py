@@ -37,7 +37,7 @@ class Target:
         x = self.GetRandZahl()*box_width
         y = self.GetRandZahl()*box_height
         self.SetCurPos(x,y)
-
+        
         self.tar.undraw()
         self.tar = Rectangle(Point(x, y), Point(x + box_width, y + box_height))
         self.tar.setFill(self.farbe)
